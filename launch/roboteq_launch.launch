@@ -1,0 +1,11 @@
+<launch>
+
+<node pkg="eklavya4_roboteq" type="roboteq_server" name="roboteq_server" respawn="true" output="screen" />
+<node pkg="eklavya4_roboteq" type="roboteq_client" name="roboteq_client" respawn="true" output="screen" />
+
+<node pkg="eklavya4_roboteq" type="joy_test" name="joy_test" respawn="true" output="screen" />
+<node pkg="eklavya4_roboteq" type="convert" name="convert" respawn="true" output="screen" />
+
+
+
+</launch>
