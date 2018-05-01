@@ -15,8 +15,6 @@ RB- all velocity zero
 using namespace std;
 
 
-
-
 ros::Publisher controller_pub;
 ros::Subscriber controller_sub;
 geometry_msgs::Twist vel_msg;
@@ -70,10 +68,10 @@ void controller_callback(const sensor_msgs::Joy::ConstPtr& msg)
 	if(msg->buttons[0]==1)
 	(vel_msg.linear.x)=vel_msg.linear.x-0.1;
 
-	if(msg->buttons[1]==1)
+	if(msg->buttons[2]==1)
 	(vel_msg.angular.z)=vel_msg.angular.z+0.1;
 
-	if(msg->buttons[2]==1)
+	if(msg->buttons[1]==1)
 	(vel_msg.angular.z)=vel_msg.angular.z-0.1;
 
 	if(msg->buttons[5]==1)

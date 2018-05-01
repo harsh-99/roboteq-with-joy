@@ -4,7 +4,7 @@
 #include "eklavya4_roboteq/SetSpeed.h"
 #include "geometry_msgs/Twist.h"
 
-#define mult_factor  100  // define mult_factor as multipling factor for vel_r and vel_l coming from joy
+#define mult_factor  1  // define mult_factor as multipling factor for vel_r and vel_l coming from joy
 
 
 ros::NodeHandle *n;

@@ -2,6 +2,7 @@
 #include "geometry_msgs/Twist.h"
 using namespace std;
 #define d 0.5
+#define r 0.10 // the radius in m 
 
 //name of node= "twist"
 //takes left and right side velocities (from encoder) in vel_msg by subscribing to topic "in_data"
@@ -23,8 +24,8 @@ void callback (geometry_msgs::Twist vel_msg)
  vl = (2*v - d*omega)/2;
  vr = (2*v + d*omega)/2;
 
- out_msg.linear.y = vr;
- out_msg.linear.x = vl;
+ out_msg.linear.y = vr*1000*60/(2*3.1415*175*r);
+ out_msg.linear.x = vl*1000*60/(2*3.1415*175*r);
 }
 
 int main (int argc, char **argv)
@@ -46,7 +47,7 @@ int main (int argc, char **argv)
 
  while (ros::ok()){
  pub.publish(out_msg);
- ROS_INFO("Left Velocity = %f, Right velocity = %f",out_msg.linear.x, out_msg.linear.y);
+ ROS_INFO("Left Velocity = %f, Right velocity = %f",vr, vl);
  ros::spinOnce();
  }
  return 0;

@@ -11,7 +11,7 @@
 #include "eklavya4_roboteq/Constants.h"
 
 using namespace std;
-#define r 10   //the radius of wheel in centimetre
+#define r 0.10   //the radius of wheel in centimetre
 geometry_msgs::Twist vel_msg;
 ros::Publisher controller_pub;
 RoboteqDevice device;
@@ -22,6 +22,7 @@ bool setSpeed(eklavya4_roboteq::SetSpeed::Request &req, eklavya4_roboteq::SetSpe
     
 	if((status = device.SetCommand(_GO, 1, req.v_r)) != RQ_SUCCESS) {
 		ROS_INFO("Failed... Error code --> %d", status);
+		
 	}
 	else {
 		ROS_DEBUG("Succeeded.");
@@ -53,8 +54,8 @@ bool setSpeed(eklavya4_roboteq::SetSpeed::Request &req, eklavya4_roboteq::SetSpe
 			ROS_DEBUG("Succeeded.");
 		}
 	}
-	vel_msg.linear.x=(left_speed*2*3.1415*r)/60;             //To convert velocity in cm/s from RPM
-	vel_msg.linear.y=(right_speed*2*3.1415*r)/60;
+	vel_msg.linear.x=(left_speed*2*3.1415*r)/60;             //To convert velocity in m/s from RPM
+	vel_msg.linear.y=((-1)*right_speed*2*3.1415*r)/60;
 	/****************************FEEDBACK**************************/
 	usleep(100);
 	
@@ -110,7 +111,7 @@ int main(int argc, char **argv)
 	}
   
     ros::ServiceServer service1 = n.advertiseService("motor_controller", setSpeed);
-    controller_pub = n.advertise<geometry_msgs::Twist>("result_vel",1000);
+    controller_pub = n.advertise<geometry_msgs::Twist>("velocity_can",1000);
     //ros::ServiceServer service2 = n.advertiseService("motor_speed", getSpeed);
     ROS_INFO("Server initialized...");
     ROS_INFO("Ready to control motors...");
