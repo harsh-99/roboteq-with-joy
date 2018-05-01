@@ -16,10 +16,38 @@ geometry_msgs::Twist vel_msg;
 ros::Publisher controller_pub;
 RoboteqDevice device;
 int status = 0;
+int flag = 0;
+// bool estop(eklavya4_roboteq::emstop::Request &requ,eklavya4_roboteq::emstop::Response &resu)
+// {
+// 	if(requ.a==1)
+// 	{
+// 		device.SetCommand(_EX,1);
+// 		device.SetCommand(_EX,2);	//call roboteq estop function
+// 		return true;
+// 	}
+
+// }
 
 bool setSpeed(eklavya4_roboteq::SetSpeed::Request &req, eklavya4_roboteq::SetSpeed::Response &res) {
     res.code = 0;
-    
+    /*******************Emergency Stop*****************/
+    if(req.estop==1 && flag == 0)
+	{
+		flag = 1;
+		device.SetCommand(_EX,1);
+		device.SetCommand(_EX,2);
+		device.SetCommand(_GO, 1, 0);
+		device.SetCommand(_GO, 1, 0);	//call roboteq estop function
+		return true;
+	}
+	else if(req.estop==0 && flag == 1)
+	{
+		flag = 0;
+		device.SetCommand(_MG,1);
+		device.SetCommand(_MG,2);	//call roboteq estop function
+		return true;
+	}
+	/***************************************************/
 	if((status = device.SetCommand(_GO, 1, req.v_r)) != RQ_SUCCESS) {
 		ROS_INFO("Failed... Error code --> %d", status);
 		
@@ -88,9 +116,9 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "motor_controller_server");
     ros::NodeHandle n;
+    // ros::ServiceServer ems = n.advertiseService("stop",estop);
     
     string response = "";
-    
     ROS_INFO("\n\n--- Roboteq Motor Controller Request Gateway Server ---\n");
     ROS_INFO("Initializing...");
 	usleep(500000);

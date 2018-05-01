@@ -12,15 +12,20 @@ RB- all velocity zero
 #include "ros/ros.h"
 #include "sensor_msgs/Joy.h"
 #include "geometry_msgs/Twist.h"
+#include "std_msgs/Int64.h"
 using namespace std;
 
 
 ros::Publisher controller_pub;
 ros::Subscriber controller_sub;
 geometry_msgs::Twist vel_msg;
-
+int a =0;
 void controller_callback(const sensor_msgs::Joy::ConstPtr& msg);
-
+void estop(const std_msgs::Int64::ConstPtr& msg)
+{	
+	a = msg->data; 
+		
+}
 int main(int argc,char **argv)
 {
 
@@ -32,6 +37,7 @@ int main(int argc,char **argv)
 	controller_pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
 
 	controller_sub = n.subscribe("/joy",1000,controller_callback);
+	ros::Subscriber ar = n.subscribe("emergency_stop", 1, estop);
 
 	ros::Rate loop_rate(10.0);
 	
@@ -61,6 +67,10 @@ int main(int argc,char **argv)
 void controller_callback(const sensor_msgs::Joy::ConstPtr& msg)
 {
 	ROS_INFO("%f", vel_msg.linear.x);
+	if(a==1){
+		vel_msg.linear.x = 0;
+		vel_msg.angular.z = 0;
+	}
 
 	if(msg->buttons[3]==1)
 	(vel_msg.linear.x)=vel_msg.linear.x+0.1;

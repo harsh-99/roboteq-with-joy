@@ -16,6 +16,7 @@ using namespace std;
  geometry_msgs::Twist vel_msg;
  geometry_msgs::Twist out_msg;
 
+
 void callback (geometry_msgs::Twist vel_msg)
 {
  v = vel_msg.linear.x;
@@ -26,6 +27,7 @@ void callback (geometry_msgs::Twist vel_msg)
 
  out_msg.linear.y = vr*1000*60/(2*3.1415*175*r);
  out_msg.linear.x = vl*1000*60/(2*3.1415*175*r);
+
 }
 
 int main (int argc, char **argv)
@@ -34,7 +36,8 @@ int main (int argc, char **argv)
  ros::NodeHandle nh;
  ros::Subscriber sub = nh.subscribe("cmd_vel",100, &callback);
  ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("vel_manipulated",100);
- 
+ // ros::Subscriber ar = n->subscribe("emergency_stop", 1, estop);
+
  vel_msg.linear.z=0;
  vel_msg.angular.x=0;
  vel_msg.angular.y=0;

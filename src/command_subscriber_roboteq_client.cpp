@@ -3,12 +3,20 @@
 #include "std_msgs/Float64.h"
 #include "eklavya4_roboteq/SetSpeed.h"
 #include "geometry_msgs/Twist.h"
-
+#include "std_msgs/Int64.h"
 #define mult_factor  1  // define mult_factor as multipling factor for vel_r and vel_l coming from joy
 
 
 ros::NodeHandle *n;
 ros::ServiceClient *client;
+ros::ServiceClient *ems_client;
+int a = 0;
+
+void estop(const std_msgs::Int64::ConstPtr& msg)
+{	
+	a = msg->data; 
+		
+}
 
 void commandVelCallback(geometry_msgs::Twist vel_msg) {
 
@@ -24,6 +32,7 @@ void commandVelCallback(geometry_msgs::Twist vel_msg) {
 	
 	srv.request.v_r = vel_r;
 	srv.request.v_l = vel_l;
+	srv.request.estop = a; 
 
 	if (client->call(srv))
 	{
@@ -50,7 +59,7 @@ int main(int argc, char **argv)
 	client = &serviceClient;
     
     ros::Subscriber sub = n->subscribe("vel_manipulated", 10, commandVelCallback);
-    
+	ros::Subscriber ar = n->subscribe("emergency_stop", 1, estop);
     ros::spin();
     
     return 0;
